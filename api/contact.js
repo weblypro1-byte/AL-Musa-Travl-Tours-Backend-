@@ -1,13 +1,37 @@
 import nodemailer from "nodemailer";
 import path from "path";
 import { fileURLToPath } from "url";
+import Cors from "cors";
+
+// Initialize CORS middleware
+const cors = Cors({
+  origin: "*",       // allow all origins (you can restrict later)
+  methods: ["POST", "OPTIONS"],
+});
+
+// Helper to run middleware in Next/Vercel API
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) return reject(result);
+      return resolve(result);
+    });
+  });
+}
 
 export default async function handler(req, res) {
+  // Run CORS first
+  await runMiddleware(req, res, cors);
+
   if (req.method !== "POST") {
-    return res.status(405).send("⚠️ Only POST requests allowed");
+    return res.status(405).json({ success: false, message: "⚠️ Only POST requests allowed" });
   }
 
   const { firstName, lastName, email, phone, message } = req.body;
+
+  if (!firstName || !lastName || !email || !message) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
 
   try {
     const __filename = fileURLToPath(import.meta.url);
@@ -17,8 +41,8 @@ export default async function handler(req, res) {
       service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
+        pass: process.env.EMAIL_PASS,
+      },
     });
 
     const mailOptions = {
@@ -28,7 +52,6 @@ export default async function handler(req, res) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; border:1px solid #eee; border-radius:10px; overflow:hidden;">
           <div style="background: #f38602; padding:20px; text-align:center;">
-         
             <h2 style="color:#fff; margin:10px 0;">AL MUSA Tours and Travel</h2>
           </div>
           <div style="padding:20px; color:#333;">
@@ -46,7 +69,6 @@ export default async function handler(req, res) {
           </div>
         </div>
       `,
-     
     };
 
     await transporter.sendMail(mailOptions);
