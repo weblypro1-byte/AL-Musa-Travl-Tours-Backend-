@@ -1,20 +1,12 @@
 {
-  "name": "backend",
+  "name": "al-musa-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "vercel dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "nodemailer": "^7.0.6"
+    "nodemailer": "^6.10.1"
   }
 }
