@@ -2,6 +2,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const path = require("path");
+require("dotenv").config(); // ✅ load .env variables
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -31,14 +32,14 @@ app.post("/contact", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "musaalrazatravelstours@gmail.com", // your Gmail
-        pass: "lxlm syyc wzyc ymjg",               // Gmail app password
+        user: process.env.EMAIL_USER, // from .env
+        pass: process.env.EMAIL_PASS, // from .env
       },
     });
 
     const mailOptions = {
-      from: `"AL MUSA Tours and Travel" <musaalrazatravelstours@gmail.com>`,
-      to: "almusatravels.tours@gmail.com", // Owner’s email
+        from: `"AL MUSA Tours and Travel" <${process.env.EMAIL_USER}>`,
+        to: process.env.OWNER_EMAIL, // Owner’s email from .env
       subject: "New Contact Form Submission",
       html: `
       <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; border:1px solid #eee; border-radius:10px; overflow:hidden;">
@@ -86,14 +87,14 @@ app.post("/subscribe", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "umarakhtarqq389@gmail.com", // your Gmail
-        pass: "ajxl wlzm nsjf jaob",       // Gmail app password
+        user: process.env.EMAIL_USER, // from .env
+        pass: process.env.EMAIL_PASS, // from .env 
       },
     });
 
     const mailOptions = {
-      from: `"AL MUSA Tours and Travel" <musaalrazatravelstours@gmail.com>`,
-      to: "almusatravels.tours@gmail.com", // Owner’s email
+        from: `"AL MUSA Tours and Travel" <${process.env.EMAIL_USER}>`,
+        to: process.env.OWNER_EMAIL, // Owner’s email from .env
       subject: "New Mail Received!",
       html: `
       <div style="font-family: Arial, sans-serif; max-width:500px; margin:auto; border:1px solid #eee; border-radius:10px; overflow:hidden;">
@@ -129,9 +130,10 @@ app.post("/subscribe", async (req, res) => {
 });
 
 // Catch-all for invalid GET routes
-app.get("*", (req, res) => {
-  res.send("⚠️ Route exists only for POST requests.");
-});
+app.use((req, res) => {
+    res.status(404).send("⚠️ Route exists only for POST requests.");
+  });
+  
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
