@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width:500px; margin:auto; border:1px solid #eee; border-radius:10px; overflow:hidden;">
           <div style="background:#0077b6; padding:20px; text-align:center;">
-            <img src="cid:brandLogo" alt="Logo" width="60" />
+           
             <h2 style="color:#fff; margin:10px 0;">AL MUSA Tours and Travel</h2>
           </div>
           <div style="padding:20px; color:#333; text-align:center;">
@@ -41,13 +41,7 @@ export default async function handler(req, res) {
           </div>
         </div>
       `,
-      attachments: [
-        {
-          filename: "logoo.png",
-          path: path.join(__dirname, "../assets/logoo.png"),
-          cid: "brandLogo"
-        }
-      ]
+     
     };
 
     await transporter.sendMail(mailOptions);
